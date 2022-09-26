@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +23,12 @@ public class User {
 
     @Column(name = "salary")
     private int salary;
+
+    @ManyToMany
+    @JoinTable (name="users_roles",
+            joinColumns=@JoinColumn (name="user_id"),
+            inverseJoinColumns=@JoinColumn(name="role_id"))
+    private List<Role> roles;
 
     public User() {
     }
@@ -72,6 +79,14 @@ public class User {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
