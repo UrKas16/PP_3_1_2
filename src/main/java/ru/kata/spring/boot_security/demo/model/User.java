@@ -1,11 +1,11 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -34,19 +34,19 @@ public class User implements UserDetails {
     @Column(name = "salary")
     private int salary;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable (name="users_roles",
             joinColumns=@JoinColumn (name="user_id"),
             inverseJoinColumns=@JoinColumn(name="role_id"))
-    private List<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
     public long getId() {
+
         return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -84,6 +84,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @EntityGraph(attributePaths = {"roles"})
     public String getUsername() {
         return username;
     }
@@ -101,12 +102,16 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 
     @Override

@@ -2,23 +2,22 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserDao;
+import ru.kata.spring.boot_security.demo.repository.UserDaoImpl;
 
-
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
-public class UserServiceImpl implements UserService{
-    private final UserDao userDao;
+public class UserServiceImpl implements UserService {
+
+    private final UserDaoImpl userDao;
 
     @Autowired
-    public UserServiceImpl(UserDao dao) {
-        this.userDao = dao;
+    public UserServiceImpl(UserDaoImpl userDao) {
+        this.userDao = userDao;
     }
 
     @Transactional
@@ -26,18 +25,21 @@ public class UserServiceImpl implements UserService{
     public void saveUser(User user) {
         userDao.saveUser(user);
     }
+
     @Override
-    public User getUserById(long id) {
+    public User getUserById(int id) {
         return this.userDao.getUserById(id);
     }
+
     @Transactional
     @Override
     public void updateUser(User user) {
         this.userDao.updateUser(user);
     }
+
     @Transactional
     @Override
-    public void deleteUserById(long id) {
+    public void deleteUserById(int id) {
         this.userDao.deleteUserById(id);
     }
 
@@ -46,9 +48,12 @@ public class UserServiceImpl implements UserService{
         return this.userDao.getAllUsers();
     }
 
-
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userDao.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String name) {
+        return userDao.findByUsername(name);
+    }
+    @Override
+    public List<Role> getRoles() {
+        return userDao.getRoles();
     }
 }

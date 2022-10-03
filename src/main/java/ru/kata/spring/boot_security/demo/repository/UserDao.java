@@ -1,18 +1,14 @@
 package ru.kata.spring.boot_security.demo.repository;
 
+
 import ru.kata.spring.boot_security.demo.model.User;
-
 import java.util.List;
-
 
 public interface UserDao {
     void saveUser(User user);
-    User getUserById(long id);
-    User getUserByUsername(String username);
-
+    User getUserById(int id);
     void updateUser(User user);
-
+    void deleteUserById(int id);
     List<User> getAllUsers();
-
-    void deleteUserById(long id);
+    User findByUsername(String name);
 }
